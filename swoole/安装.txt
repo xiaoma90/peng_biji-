@@ -1,0 +1,25 @@
+Swoole是：PHP语言的高性能网络通信框架，提供了PHP语言的异步多线程服务器，异步TCP/UDP网络客户端，异步MySQL，数据库连接池，AsyncTask，消息队列，毫秒定时器，异步文件读写，异步DNS查询。 Swoole虽然是标准的PHP扩展，实际上与普通的扩展不同。普通的扩展只是提供一个库函数。而swoole扩展在运行后会接管PHP的控制权，进入事件循环。当IO事件发生后，swoole会自动回调指定的PHP函数。
+一：两种安装方式：
+1》编译安装:
+1>wget http://pecl.php.net/get/swoole-1.9.6.tgz 或者 
+    wget http://www.taikongliu.com/swoole/swoole-1.7.6-stable.tar.gz        //下载swoole    
+2>tar -zxvf swoole-1.7.6-stable.tar.gz        //解压swoole
+3>cd swoole-src-swoole-1.7.6-stable/        //进入swoole
+4>/phpstudy/server/php/bin/phpize        //生成configure
+5>./configure --with-php-config=/phpstudy/server/php/bin/php-config        //编译
+6>make && make install            //安装
+7>cd /phpstudy/server/php/lib/php/extensions/no-debug-non-zts-20121212    //查看是否安转上了swoole.so    (注意：此文件下边都是你安装的拓展)
+8>vim /phpstudy/server/php/etc/php.ini     //在php.ini添加extension=swoole.so加入到文件最后一行
+9>/phpstudy/server/nginx/sbin/nginx  -s reload    //重启nginx    
+10>查看phpinfo,这时候swoole拓展已经装上了
+
+2》PECL安装:
+1>pecl install swoole    //如果以上步骤一切正常的话，即表示swoole已经成功的安装了。
+2>extension=swoole.so            //成功之后，我们打开php.ini（不知道配置文件在哪的回去再把CLI看一遍），把swoole.so加入到文件最后
+3>$ php -m | grep swoole    //查看swoole是否被正确的安装
+
+如如果想要升级swoole：pecl upgrade swoole
+
+
+3 》 宝塔面板安装
+   直接在扩展中安装swoole

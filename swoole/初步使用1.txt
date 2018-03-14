@@ -1,0 +1,112 @@
+服务器端运行程序
+1>创建server.php
+<?php
+$serv = new swoole_server('127.0.0.1', 9501);    
+//server的创建，只需要绑定要监听的ip和端口，如果ip指定为127.0.0.1，则表示客户端只能位于本机才能连接，其他计算机无法连接。
+//端口这里指定为9501，可以通过netstat查看下该端口是否被占用。如果该端口被占用，可更改为其他端口，如9502，9503等。
+$serv->set([    //我开2个worker进程处理我们的业务
+    'worker_num' => 2,
+]);
+// 有新的客户端连接时，worker进程内会触发该回调
+$serv->on('Connect', function ($serv, $fd) {
+    echo "new client connected." . PHP_EOL;
+});
+//参数$serv是我们一开始创建的swoole_server对象，
+//参数$fd是唯一标识，用于区分不同的客户端，同时该参数是1-1600万之间可以复用的整数。
+// server接收到客户端的数据后，worker进程内触发该回调
+$serv->on('Receive', function ($serv, $fd, $fromId, $data) {
+    // 收到数据后发送给客户端
+    $serv->send($fd, 'Server '. $data);
+});
+// 客户端断开连接或者server主动关闭连接时 worker进程内调用
+$serv->on('Close', function ($serv, $fd) {
+    echo "Client close." . PHP_EOL;
+});
+// 启动server
+$serv->start();
+?>
+
+2>由于swoole_server只能运行在CLI模式下，所以不要试图通过浏览器进行访问，这样是无效的,我们在命令行下面执行,注意一定要找到php的绝对路径
+     /phpstudy/server/php/bin/php  server.php  （这行代码的意思是，把程序在服务器跑起来）
+    注意：我们平时执行完一个指令，执行完就结束了，但是现在的情况正好相反，当前程序一直处于执行中的状态，并没有退出终端。退出状态一般为当前终端的执行权交给了终端，
+    即可用在终端下进行其他操作，此时服务器的进程已经开启了。
+3>在开另一个终端，执行  telnet 127.0.0.1 9501  (模拟客户端请求)   如果没有安装telnet,可以 yum install -y telnet 安装
+4>创建客户端文件，也要在CLI下执行：client.php
+<?php
+// 创建一个同步阻塞的tcp socket
+// 第一个参数是表示socket的类型，有下面四种类型选择，这里选则tcp socket就好
+/**
+ *     SWOOLE_SOCK_TCP 创建tcp socket
+SWOOLE_SOCK_TCP6 创建tcp ipv6 socket
+SWOOLE_SOCK_UDP 创建udp socket
+SWOOLE_SOCK_UDP6 创建udp ipv6 socket
+ */
+// 第二个参数是同步还是异步
+/**
+ *     SWOOLE_SOCK_SYNC 同步客户端
+SWOOLE_SOCK_ASYNC 异步客户端
+ */
+$client = new swoole_client(SWOOLE_SOCK_TCP, SWOOLE_SOCK_SYNC);
+
+// 随后建立连接，连接失败直接退出并打印错误码
+$client->connect('127.0.0.1', 9503) || exit("connect failed. Error: {$client->errCode}\n");
+// 向服务端发送数据
+$client->send("hello server.");
+// 从服务端接收数据
+$response = $client->recv();
+// 输出接受到的数据
+echo $response . PHP_EOL;
+// 关闭连接
+$client->close();
+5>/phpstudy/server/php/bin/php client.php        //执行客户端，输出Server hello server.
+6>使用task异步处理数据
+  在建服务器程序 server_asy.php
+ <?php
+/**
+ * swoorl异步处理
+ */
+$serv = new swoole_server("127.0.0.1", 9503);
+//配置task进程的数量，即配置task_worker_num这个配置项。比如我们开启一个task进程
+$serv->set([
+    'task_worker_num' => 1,
+]);
+$serv->on('Connect', function ($serv, $fd) {
+    echo "new client connected." . PHP_EOL;
+});
+$serv->on('Receive', function ($serv, $fd, $fromId, $data) {
+    echo "worker received data: {$data}" . PHP_EOL;
+
+    // 投递一个任务到task进程中
+    $serv->task($data);
+
+    // 通知客户端server收到数据了
+    $serv->send($fd, 'This is a message from server.');
+
+    // 为了校验task是否是异步的，这里和task进程内都输出内容，看看谁先输出
+    echo "worker continue run."  . PHP_EOL;
+});
+/**
+ * $serv swoole_server
+ * $taskId 投递的任务id,因为task进程是由worker进程发起，所以多worker多task下，该值可能会相同
+ * $fromId 来自那个worker进程的id
+ * $data 要投递的任务数据
+ */
+$serv->on('Task', function ($serv, $taskId, $fromId, $data) {
+    echo "task start. --- from worker id: {$fromId}." . PHP_EOL;
+    for ($i=0; $i < 5; $i++) {
+        sleep(1);
+        echo "task runing. --- {$i}" . PHP_EOL;
+    }
+    echo "task end." . PHP_EOL;
+});
+
+$serv->on('Finish', function ($serv, $taskId, $data) {
+    echo "finish received data '{$data}'" . PHP_EOL;
+});
+$serv->start();
+
+7>/phpstudy/server/php/bin/php server_asy.php        //执行服务器
+8>/phpstudy/server/php/bin/php client.php        //在执行客户端
+9>再把server_asy.php中的echo"task end." . PHP_EOL;  改成return "task end." . PHP_EOL;，执行
+   /phpstudy/server/php/bin/php server_asy.php    和/phpstudy/server/php/bin/php client.php，
+  这时就可以看到swoole的异步请求成功了
