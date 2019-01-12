@@ -16,13 +16,13 @@ wget https://www.python.org/ftp/python/3.7.2/Python-3.7.2.tgz
 
 下载完成后到下载目录下，解压
 
-tar -xzvf Python-3.3.0.tgz
+tar -xzvf Python-3.7.2.tgz
 
  
 
 进入解压缩后的文件夹
 
-cd Python-3.3.0　　
+cd Python-3.7.2　　
 
  
 
