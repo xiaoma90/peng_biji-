@@ -12,32 +12,13 @@
 3，linux更改源
 
     Linux Deepin 更新源列表配置文件为 /etc/apt/sources.list
+    首先，点击任务栏上的”控制中心“
+    在”控制中心“中点击”更新“按钮。
+    在”更新“中点击”更新设置“
+    在”更新设置“中点击”切换镜像源“
+    在”切换镜像源“中可以先进行”测速“，确定下载速度最快的软件源。
+    要设置，只需要选中相应的软件源即可，如下图所示，选中了”网易“的软件源
+    设置完软件源后，需要更新软件列表，同时按CTRL+ALT+T键，打开终端。
+    在终端中执行如下命令即可更新软件列表sudo apt-get update  #必须对列表刷新
     
-    deb http://packages.linuxdeepin.com/ubuntu precise main restricted universe multiverse
-    deb http://packages.linuxdeepin.com/ubuntu precise-security main restricted universe multiverse
-    deb http://packages.linuxdeepin.com/ubuntu precise-updates main restricted universe multiverse
-    #deb http://packages.linuxdeepin.com/ubuntu precise-proposed main restricted universe multiverse
-    #deb http://packages.linuxdeepin.com/ubuntu precise-backports main restricted universe multiverse
-     
-    deb-src http://packages.linuxdeepin.com/ubuntu precise main restricted universe multiverse
-    deb-src http://packages.linuxdeepin.com/ubuntu precise-security main restricted universe multiverse
-    deb-src http://packages.linuxdeepin.com/ubuntu precise-updates main restricted universe multiverse
-    #deb-src http://packages.linuxdeepin.com/ubuntu precise-proposed main restricted universe multiverse
-    #deb-src http://packages.linuxdeepin.com/ubuntu precise-backports main restricted universe multiverse
-     
-    deb http://mirrors.cicku.me/deepin precise main non-free
-    deb-src http://mirrors.cicku.me/deepin precise main non-free
-     
-    deb http://mirrors.cicku.me/deepin precise-updates main non-free
-    deb-src http://mirrors.cicku.me/deepin precise-updates main non-free
-    
-    ####Linux Deepin 特有源####
-    deb http://packages.linuxdeepin.com/deepin precise main non-free
-    deb-src http://packages.linuxdeepin.com/deepin precise main non-free
-     
-    deb http://packages.linuxdeepin.com/deepin precise-updates main non-free
-    deb-src http://packages.linuxdeepin.com/deepin precise-updates main non-free
-    
-    
-    sudo apt-get update #必须对列表刷新
 EOT;
