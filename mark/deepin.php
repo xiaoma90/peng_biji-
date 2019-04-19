@@ -1,5 +1,6 @@
 <?php
 <<<EOT
+deepin 使用命令 https://github.com/jingle0927/blog/blob/master/source/_posts/deepin-command.md
 1,wifi 感叹号处理方法
     /etc/NetworkManager/NetworkManager.conf
 
