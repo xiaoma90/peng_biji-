@@ -1,0 +1,30 @@
+前端：
+xhrFields: { withCredentials: true },
+crossDomain: true,
+
+后端：
+
+$allow_origin = array(
+    'http://localhost:8080',
+    '*',
+
+);
+$origin = isset($_SERVER['HTTP_ORIGIN'])? $_SERVER['HTTP_ORIGIN'] : '';
+
+
+//if(in_array($origin, $allow_origin)){
+//    header('Access-Control-Allow-Origin:'.$origin);
+//}
+header('Access-Control-Allow-Origin:*');
+header('Access-Control-Allow-Credentials:true');
+header("Access-Control-Allow-Headers:DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type, Accept-Language, Origin, Accept-Encoding,A-Token");
+// header('Access-Control-Allow-Headers: X-Requested-With, Content-Type');
+header('Access-Control-Allow-Methods: GET, PUT, POST,OPTIONS, DELETE');
+header('Access-Control-Max-Age: ' . 3600 * 24);
+define('APP_PATH', __DIR__ . '/../application/');
+define('BACK_URL',  'http://nebula.28chuxing.cn');
+define('IMG_URL',  'http://cdn.jiwoxiadan.com');
+//处理嗅探
+if($_SERVER['REQUEST_METHOD'] == 'OPTIONS'){
+    exit;
+}
