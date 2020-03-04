@@ -44,3 +44,9 @@ function vote($content='')
         return  $vote_content;
     }
 }
+function get_img_thumb_url($content="",$suffix="")
+{
+    $pregRule = "/<[img|IMG].*?src=[\'|\"]((?!http.).*?(?:[\.jpg|\.jpeg|\.png|\.gif|\.bmp]))[\'|\"].*?[\/]?>/";
+    $content = preg_replace($pregRule, '<img src="http://cdn.jiwoxiadan.com/${1}" style="max-width:100%;margin:10px 0;">', $content);
+    return $content;
+}
