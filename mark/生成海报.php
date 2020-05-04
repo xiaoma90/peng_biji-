@@ -1,6 +1,7 @@
 <?php
 /**
  * 生成海报
+ * 依赖 gd 库
  */
 function createPoster()
 {
