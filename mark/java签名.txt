@@ -2,15 +2,21 @@
 
 keytool -list -v -keystore D:\keystorePro\etly.keystore -storepass 123456
 
-一、使用命令行进行签名。 
-Android有自带签名的DOS命令 : jarsigner -verbose -keystore [您的私钥存放路径] -signedjar [签名后文件存放路径] [未签名的文件路径] [您的证书名称] 
-此命令各参数含义如下： 
-jarsigner -verbose -keystore zdd.keystore -signedjar 123x.apk 456.apk asia
-jarsigner -verbose:签名命令标识符。 
--keystore:后面跟着的是你签名使用的密钥文件(keystore)的绝对路径。 
--signedjar:此后有三个参数： 
-参数一:签名后生成的apk文件所要存放的路径。 
-参数二:未签名的apk文件的存放路径。 
+一、使用命令行进行签名。 
+Android有自带签名的DOS命令 : jarsigner -verbose -keystore [您的私钥存放路径] -signedjar [签名后文件存放路径] [未签名的文件路径] [您的证书名称] 
+此命令各参数含义如下： 
+jarsigner -verbose -keystore zdd.keystore -signedjar 123x.apk 456.apk asia
+jarsigner -verbose:签名命令标识符。 
+-keystore:后面跟着的是你签名使用的密钥文件(keystore)的绝对路径。 
+-signedjar:此后有三个参数： 
+参数一:签名后生成的apk文件所要存放的路径。 
+参数二:未签名的apk文件的存放路径。 
 参数三:你的证书名称，通俗点说就是你keystore文件的别名，那这个别名怎么查看？其实就是在你eclipse进行签名打包时的Alias的值。
 
  jarsigner -verbose -keystore zhongkao.keystore -signedjar 456.apk OppoSignVerify.apk com.benben.zhongkao
+
+ 生成签名证书
+ keytool -genkey -alias mytest -keyalg RSA -keysize 2048 -validity 36500 -keystore mytest.keystore
+
+ 查看证书信息
+ keytool -list -v -keystore test.keystore
